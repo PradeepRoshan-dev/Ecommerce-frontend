@@ -14,55 +14,50 @@ function Product({
   const [products, setProducts] = useState([]);
   const [maxSelected, setMaxSelected] = useState(100000);
 
+  // FETCH PRODUCTS
   useEffect(() => {
     axios
       .get(`${API_BASE_URL}/api/products`)
       .then((res) => {
-        setProducts(res.data);
+        const data = Array.isArray(res.data)
+          ? res.data
+          : res.data?.data || [];
+        setProducts(data);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => console.log(err));
   }, []);
 
-  const categories = [
-    ...new Set(products.map((p) => p.category)),
-  ].sort();
+  // SAFE ARRAY
+  const safeProducts = Array.isArray(products) ? products : [];
 
-  const brands = [
-    ...new Set(products.map((p) => p.brand)),
-  ].sort();
+  // FILTER OPTIONS (SAFE)
+  const categories = [...new Set(safeProducts.map((p) => p?.category).filter(Boolean))].sort();
 
-  const colors = [
-    ...new Set(products.map((p) => p.color)),
-  ].sort();
+  const brands = [...new Set(safeProducts.map((p) => p?.brand).filter(Boolean))].sort();
+
+  const colors = [...new Set(safeProducts.map((p) => p?.color).filter(Boolean))].sort();
 
   const rams = [
-    ...new Set(products.map((p) => parseInt(p.ram))),
+    ...new Set(
+      safeProducts.map((p) => Number(p?.ram)).filter((r) => !isNaN(r))
+    ),
   ].sort((a, b) => a - b);
 
-  const prices = products.map((p) => p.newprice);
+  const prices = safeProducts.map((p) => p?.newprice || 0);
 
-  const minprice = prices.length
-    ? Math.min(...prices)
-    : 0;
+  const minprice = prices.length ? Math.min(...prices) : 0;
+  const maxprice = prices.length ? Math.max(...prices) : 100000;
 
-  const maxprice = prices.length
-    ? Math.max(...prices)
-    : 100000;
-
-  const storages = [
-    ...new Set(products.map((p) => p.storage)),
-  ];
+  const storages = [...new Set(safeProducts.map((p) => p?.storage).filter(Boolean))];
 
   const storagerange = (storage) =>
-    storage >= 1024
-      ? `${storage / 1024}TB`
-      : `${storage}GB`;
+    storage >= 1024 ? `${storage / 1024}TB` : `${storage}GB`;
 
+  // CART
   const addToCart = (product) => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingItem = cart.find(item => item._id === product._id);
+
+    const existingItem = cart.find((item) => item._id === product._id);
 
     if (existingItem) {
       existingItem.quantity += 1;
@@ -71,32 +66,33 @@ function Product({
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
-    alert(`${product.name} added to cart!`);
+
+    alert(`${product?.name || "Item"} added to cart!`);
   };
 
+  // INIT PRICE SLIDER
   useEffect(() => {
     if (prices.length > 0) {
       setMaxSelected(maxprice);
     }
-  }, [maxprice]);
+  }, [maxprice]); // eslint-disable-line
 
-  const filteredproducts = products.filter(
-    (product) => {
-      const priceMatch =
-        product.newprice >= minprice &&
-        product.newprice <= maxSelected;
+  // FILTERED PRODUCTS
+  const filteredproducts = safeProducts.filter((product) => {
+    const price = product?.newprice || 0;
 
-      const brandMatch =
-        selectedBrand.length === 0 ||
-        selectedBrand.includes(product.brand);
+    const priceMatch = price >= minprice && price <= maxSelected;
 
-        const colorMatch =
-        selectedColor.length === 0 ||
-        selectedColor.includes(product.color);
+    const brandMatch =
+      selectedBrand.length === 0 ||
+      selectedBrand.includes(product?.brand);
 
-      return priceMatch && brandMatch && colorMatch;
-    }
-  );
+    const colorMatch =
+      selectedColor.length === 0 ||
+      selectedColor.includes(product?.color);
+
+    return priceMatch && brandMatch && colorMatch;
+  });
 
   return (
     <div className="product-container">
@@ -110,10 +106,9 @@ function Product({
 
           <hr className="linesep" />
 
-          {/* Categories */}
+          {/* CATEGORY */}
           <div className="filter-group">
             <h4>Categories</h4>
-
             {categories.map((category, index) => (
               <label key={index}>
                 <input type="checkbox" /> {category}
@@ -121,7 +116,7 @@ function Product({
             ))}
           </div>
 
-          {/* Price Range */}
+          {/* PRICE */}
           <div className="pricerange">
             <h4>Price Range</h4>
 
@@ -130,9 +125,7 @@ function Product({
               min={minprice}
               max={maxprice}
               value={maxSelected}
-              onChange={(e) =>
-                setMaxSelected(Number(e.target.value))
-              }
+              onChange={(e) => setMaxSelected(Number(e.target.value))}
             />
 
             <div className="rangevalue">
@@ -144,34 +137,26 @@ function Product({
           {/* RAM */}
           <div className="ram">
             <h4>RAM</h4>
-
             <select>
               <option>Select RAM</option>
-
               {rams.map((ram, index) => (
-                <option key={index}>
-                  {ram}GB
-                </option>
+                <option key={index}>{ram}GB</option>
               ))}
             </select>
           </div>
 
-          {/* Storage */}
+          {/* STORAGE */}
           <div className="storage">
             <h4>Storage</h4>
-
             <select>
               <option>Select Storage</option>
-
               {storages.map((storage, index) => (
-                <option key={index}>
-                  {storagerange(storage)}
-                </option>
+                <option key={index}>{storagerange(storage)}</option>
               ))}
             </select>
           </div>
 
-          {/* Brand */}
+          {/* BRAND */}
           <div className="filter-brand">
             <h4>Brand</h4>
 
@@ -179,80 +164,42 @@ function Product({
               <label key={index}>
                 <input
                   type="checkbox"
-                  checked={selectedBrand.includes(
-                    brand
-                  )}
+                  checked={selectedBrand.includes(brand)}
                   onChange={() =>
                     setSelectedBrand(
-                      selectedBrand.includes(
-                        brand
-                      )
-                        ? selectedBrand.filter(
-                            (b) => b !== brand
-                          )
-                        : [
-                            ...selectedBrand,
-                            brand,
-                          ]
+                      selectedBrand.includes(brand)
+                        ? selectedBrand.filter((b) => b !== brand)
+                        : [...selectedBrand, brand]
                     )
                   }
                 />
 
-                {brand.charAt(0).toUpperCase() +
-                  brand.slice(1)}
+                {brand ? brand.charAt(0).toUpperCase() + brand.slice(1) : ""}
               </label>
             ))}
           </div>
 
-          {/* Color */}
+          {/* COLOR */}
           <div className="filter-color">
             <h4>Color</h4>
 
             {colors.map((color, index) => (
               <label key={index}>
-                <input type="checkbox" checked={selectedColor.includes(
-                    color
-                  )}
+                <input
+                  type="checkbox"
+                  checked={selectedColor.includes(color)}
                   onChange={() =>
                     setSelectedColor(
-                      selectedColor.includes(
-                        color
-                      )
-                        ? selectedColor.filter(
-                            (c) => c !== color
-                          )
-                        : [
-                            ...selectedColor,
-                            color,
-                          ]
+                      selectedColor.includes(color)
+                        ? selectedColor.filter((c) => c !== color)
+                        : [...selectedColor, color]
                     )
-                  }/>{" "}
-                {color.charAt(0).toUpperCase() +
-                  color.slice(1)}
+                  }
+                />
+
+                {color ? color.charAt(0).toUpperCase() + color.slice(1) : ""}
               </label>
             ))}
-          </div>
-          
-
-          {/* Rating */}
-          <div className="filter-rating">
-            <h4>Rating ⭐⭐⭐⭐⭐</h4>
-
-            <label>
-              <input type="checkbox" /> 3.0 - 3.5
-            </label>
-
-            <label>
-              <input type="checkbox" /> 3.5 - 4.0
-            </label>
-
-            <label>
-              <input type="checkbox" /> 4.0 - 4.5
-            </label>
-
-            <label>
-              <input type="checkbox" /> 4.5 - 5.0
-            </label>
           </div>
         </div>
       </div>
@@ -262,66 +209,40 @@ function Product({
         <div className="heading">
           <h1>All Products</h1>
 
-          <div className="filter-tags">
-            <h4>Filters Applied:</h4>
-
-            <span className="tag">
-              Brand: Samsung ×
-            </span>
-
-            <span className="tag">
-              Category: Electronics ×
-            </span>
-
-            <span className="tag">
-              Price: ₹100 - ₹500 ×
-            </span>
-          </div>
-
-          <p>
-            Products Found (
-            {filteredproducts.length})
-          </p>
+          <p>Products Found ({filteredproducts.length})</p>
         </div>
 
         <div className="products-grid">
           {filteredproducts.map((product) => (
-            <div
-              key={product._id}
-              className="product-tiles"
-            >
+            <div key={product?._id} className="product-tiles">
               <div className="image-wrapper2">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                />
+                <img src={product?.image} alt={product?.name || "product"} />
               </div>
 
               <div className="product-info">
-                <h1>{product.name}</h1>
+                <h1>{product?.name || "Unnamed Product"}</h1>
 
                 <div className="specs">
-                  <span>{product.color}</span>
-                  <span>Ram:{product.ram}</span>
-                  <span>Storage:{storagerange(product.storage)}</span>
+                  <span>{product?.color || "N/A"}</span>
+                  <span>RAM: {product?.ram || "-"}</span>
+                  <span>
+                    Storage: {storagerange(product?.storage || 0)}
+                  </span>
                 </div>
 
                 <div className="ratings">
-                  ⭐ {product.rating} (
-                  {product.review})
+                  ⭐ {product?.rating || 0} ({product?.review || 0})
                 </div>
 
                 <div className="price-section">
-                  <span className="old-price">
-                    ₹{product.oldprice}
-                  </span>
-
-                  <span className="new-price">
-                    ₹{product.newprice}
-                  </span>
+                  <span className="old-price">₹{product?.oldprice || 0}</span>
+                  <span className="new-price">₹{product?.newprice || 0}</span>
                 </div>
 
-                <button className="cartbtn" onClick={() => addToCart(product)}>
+                <button
+                  className="cartbtn"
+                  onClick={() => addToCart(product)}
+                >
                   Add to Cart
                 </button>
               </div>
