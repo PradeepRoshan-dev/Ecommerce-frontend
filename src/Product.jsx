@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import API_BASE_URL from "https://ecommerce-backend-p1dv.onrender.com";
 import "./Product.css";
+
+const API_BASE_URL = "https://ecommerce-backend-p1dv.onrender.com";
 
 function Product({
   selectedBrand = [],

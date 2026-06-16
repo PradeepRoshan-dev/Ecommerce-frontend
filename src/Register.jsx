@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./Register.css";
 import { Link, useNavigate } from "react-router-dom";
-import API_BASE_URL from "https://ecommerce-backend-p1dv.onrender.com";
 
 function Register() {
+  const API_BASE_URL = "https://ecommerce-backend-p1dv.onrender.com";
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

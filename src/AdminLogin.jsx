@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import API_BASE_URL from "https://ecommerce-backend-p1dv.onrender.com";
 import "./AdminLogin.css";
 
 function AdminLogin() {
+  const API_BASE_URL =
+  "https://ecommerce-backend-p1dv.onrender.com";
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

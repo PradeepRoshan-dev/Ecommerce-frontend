@@ -1,12 +1,14 @@
 import axios from "axios";
-import API_BASE_URL from "./config/api.js";
+
+const API_BASE_URL =
+  "https://ecommerce-backend-p1dv.onrender.com";
 
 const API = `${API_BASE_URL}/api/products`;
 
-export const getProducts = () =>
-  axios.get(API);
+export const getProducts = () => {
+  return axios.get(API);
+};
 
-export const addProduct = (
-  product
-) =>
-  axios.post(API, product);
+export const addProduct = (product) => {
+  return axios.post(API, product);
+};

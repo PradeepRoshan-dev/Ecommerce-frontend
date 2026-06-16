@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import API_BASE_URL from "https://ecommerce-backend-p1dv.onrender.com";
 import "./Home.css";
 
 function Home() {
+  const API_BASE_URL =
+  "https://ecommerce-backend-p1dv.onrender.com";
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
