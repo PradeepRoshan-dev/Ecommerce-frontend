@@ -18,6 +18,8 @@ function Home() {
       .catch((err) => {
         console.log("Error fetching products:", err);
         setLoading(false);
+
+        console.log("Mongo URI:", process.env.MONGO_URI);
       });
   }, []);
 
