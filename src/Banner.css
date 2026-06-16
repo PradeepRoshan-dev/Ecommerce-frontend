@@ -97,7 +97,7 @@
     align-items: center;
 }
 
-.background-text {
+/* .background-text {
     font-family: "Notable", sans-serif;
   font-weight: 400;
   font-style: normal;
@@ -105,11 +105,11 @@
     font-size: 100px;
     color: rgba(255, 255, 255, 0.329);
     -webkit-text-stroke: 2px white;
-    z-index: 3;
+    z-index: 1;
     letter-spacing: 10px;
     text-align: center;
     font-weight: bold;
-}
+} */
 
 .banner-image {
     width: 500px;

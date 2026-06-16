@@ -28,13 +28,16 @@ function Register() {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("userToken", data.token);
-        localStorage.setItem("userId", data.user.id);
-        localStorage.setItem("userName", data.user.name);
-        
-        setUserName(data.user.name);
+        const admin = data.admin || {};
+
+        localStorage.setItem("userToken", data.token || "");
+        localStorage.setItem("userId", admin.id || "");
+        localStorage.setItem("userName", admin.name || "");
+        localStorage.setItem("userRole", admin.role || "user");
+
+        setUserName(admin.name || "");
         setShowWelcomePopup(true);
-        
+
         // Auto-redirect after 5 seconds
         setTimeout(() => {
           navigate("/");
@@ -43,6 +46,7 @@ function Register() {
         setError(data.message || "Registration failed");
       }
     } catch (err) {
+      console.error("Register request failed:", err);
       setError("Connection error. Please try again.");
     } finally {
       setLoading(false);

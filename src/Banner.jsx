@@ -105,9 +105,9 @@ function Banner() {
           alt="banner"
         />
 
-        <h1 className="background-text">
+        {/* <h1 className="background-text">
           {banners[current].category}
-        </h1>
+        </h1> */}
 
       </div>
 
