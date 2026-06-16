@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Register.css";
 import { Link, useNavigate } from "react-router-dom";
+import API_BASE_URL from "./config/api.js";
 
 function Register() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function Register() {
     setLoading(true);
 
     try {
-      const response = await fetch("https://ecommerce-backend-six-gules.vercel.app/api/admin/auth/register", {
+      const response = await fetch(`${API_BASE_URL}/api/admin/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password })

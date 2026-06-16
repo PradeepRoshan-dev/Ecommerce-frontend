@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "./config/api.js";
 import "./Home.css";
 
 function Home() {
@@ -9,7 +10,7 @@ function Home() {
 
   useEffect(() => {
     axios
-      .get("https://ecommerce-backend-six-gules.vercel.app/api/products")
+      .get(`${API_BASE_URL}/api/products`)
       .then((res) => {
         setProducts(res.data);
         setLoading(false);

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import API_BASE_URL from "./config/api.js";
 import "./AdminLogin.css";
 
 function AdminLogin() {
@@ -17,7 +18,7 @@ function AdminLogin() {
     setLoading(true);
 
     try {
-      const response = await fetch("https://ecommerce-backend-six-gules.vercel.app/api/admin/auth/login", {
+      const response = await fetch(`${API_BASE_URL}/api/admin/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })

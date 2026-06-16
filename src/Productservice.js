@@ -1,7 +1,7 @@
 import axios from "axios";
+import API_BASE_URL from "./config/api.js";
 
-const API =
-  "https://ecommerce-backend-six-gules.vercel.app/api/products";
+const API = `${API_BASE_URL}/api/products`;
 
 export const getProducts = () =>
   axios.get(API);

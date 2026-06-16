@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
+import API_BASE_URL from "./config/api.js";
 
 function Login() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function Login() {
 
   try {
     const response = await fetch(
-      "https://ecommerce-backend-six-gules.vercel.app/api/admin/auth/login",
+      `${API_BASE_URL}/api/admin/auth/login`,
       {
         method: "POST",
         headers: {

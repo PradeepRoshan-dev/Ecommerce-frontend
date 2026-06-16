@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "./config/api.js";
 import "./AdminDashboard.css";
 
 function AdminDashboard() {
@@ -66,7 +67,7 @@ function AdminDashboard() {
   // FETCH PRODUCTS
   const fetchProducts = async () => {
     try {
-      const res = await fetch("https://ecommerce-backend-six-gules.vercel.app/api/products");
+      const res = await fetch(`${API_BASE_URL}/api/products`);
       const data = await res.json();
       setProducts(Array.isArray(data) ? data : []);
     } catch {
@@ -77,7 +78,7 @@ function AdminDashboard() {
   // FETCH STATS
   const fetchStats = async () => {
     try {
-      const res = await fetch("https://ecommerce-backend-six-gules.vercel.app/api/admin/stats", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/stats`, {
         headers: {
           Authorization: `Bearer ${getToken()}`
         }
@@ -114,8 +115,8 @@ function AdminDashboard() {
       const isEdit = Boolean(editingId);
 
       const url = isEdit
-        ? `https://ecommerce-backend-six-gules.vercel.app/api/products/${editingId}`
-        : "https://ecommerce-backend-six-gules.vercel.app/api/products";
+        ? `${API_BASE_URL}/api/products/${editingId}`
+        : `${API_BASE_URL}/api/products`;
 
       const method = isEdit ? "PUT" : "POST";
 
@@ -177,7 +178,7 @@ function AdminDashboard() {
 
     try {
       const res = await fetch(
-        `https://ecommerce-backend-six-gules.vercel.app/api/products/${id}`,
+        `${API_BASE_URL}/api/products/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -204,7 +205,7 @@ function AdminDashboard() {
 
     try {
       const res = await fetch(
-        `https://ecommerce-backend-six-gules.vercel.app/api/products/${selectedProductForStock._id}/update-stock`,
+        `${API_BASE_URL}/api/products/${selectedProductForStock._id}/update-stock`,
         {
           method: "POST",
           headers: {
