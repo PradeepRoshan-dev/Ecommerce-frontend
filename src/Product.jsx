@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import API_BASE_URL from "./config/api.js";
+import API_BASE_URL from "https://ecommerce-backend-p1dv.onrender.com";
 import "./Product.css";
 
 function Product({

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import API_BASE_URL from "./config/api.js";
+import API_BASE_URL from "https://ecommerce-backend-p1dv.onrender.com";
 import "./AdminDashboard.css";
 
 function AdminDashboard() {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
-import API_BASE_URL from "./config/api.js";
+import API_BASE_URL from "https://ecommerce-backend-p1dv.onrender.com";
 
 function Login() {
   const navigate = useNavigate();
